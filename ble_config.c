@@ -143,7 +143,8 @@ static const uint8_t char_value[1]                 = {0x11};
 #define CFG_READ_ONLY     2
 #define CFG_WRITEREAD     0
 
-static const char* cfgIds[CFG_IDS_CNT] =
+
+const char* standard_cfgIds[CFG_IDS_CNT] =
 {
   "u",
   "p",
@@ -152,7 +153,7 @@ static const char* cfgIds[CFG_IDS_CNT] =
   "k",
   "d"
 };
-static const uint8_t cfgOpts[CFG_IDS_CNT] =
+const uint8_t standard_cfgOpts[CFG_IDS_CNT] =
 {
   CFG_WRITEREAD,
   CFG_WRITE_ONLY,
@@ -161,6 +162,17 @@ static const uint8_t cfgOpts[CFG_IDS_CNT] =
   CFG_WRITE_ONLY,
   CFG_WRITEREAD
 };
+
+
+static const char** cfgIds = standard_cfgIds;
+static const uint8_t * cfgOpts = standard_cfgOpts;
+static int wc_cfg_id_count = CFG_IDS_CNT;
+
+void set_ble_config_params(int count, const char ** ids, const uint8_t * idk) {
+    wc_cfg_id_count = count;
+    cfgIds = ids;
+    cfgOpts = idk;
+}
 
 const char * get_cfg_id(int id) {
     return cfgIds[id];
@@ -196,7 +208,7 @@ void rebuildCfg() {
     ble_cfg->cfgTotalLen = 1;
     ble_cfg->cfgTotal[0] = '\t';
 
-    for (uint8_t id = ble_cfg->cfgRebuildFrom; id < CFG_IDS_CNT; id++) {
+    for (uint8_t id = ble_cfg->cfgRebuildFrom; id < wc_cfg_id_count; id++) {
         char * state = &(ble_cfg->cfgTotal[ble_cfg->cfgTotalLen]);
 
         cJSON * value_item = cJSON_GetArrayItem(WC_CFG_VALUES, id);
@@ -227,7 +239,7 @@ void rebuildCfg() {
 }
 
 void setConfigValue(int id, cJSON * val) {
-    if ((id >= 0) && (id < CFG_IDS_CNT)) {
+    if ((id >= 0) && (id < wc_cfg_id_count)) {
         cJSON_DeleteItemFromArray(WC_CFG_VALUES, id);
         cJSON_InsertItemInArray(WC_CFG_VALUES, id, val);
 
@@ -420,7 +432,7 @@ void exec_write_char1(int len, int offset, const uint8_t * value, const uint8_t 
                         if (resp) {
                             int8_t k = -1;
 
-                            for (int8_t i = 0; i < CFG_IDS_CNT; i++) {
+                            for (int8_t i = 0; i < wc_cfg_id_count; i++) {
                                 cJSON * value_item = cJSON_GetObjectItem(resp, get_cfg_id(i));
 
                                 if ((value_item != NULL) && ((cfgOpts[i] & CFG_READ_ONLY) == 0)) {
@@ -656,7 +668,7 @@ int initialize_ble(const cJSON * cfg) {
     ble_enabled = false;
 
     WC_CFG_VALUES = cJSON_CreateArray();
-    for (int8_t i = 0; i < CFG_IDS_CNT; i++) {
+    for (int8_t i = 0; i < wc_cfg_id_count; i++) {
         int8_t k = -1;
         for (int8_t j = 0; j < cJSON_GetArraySize(cfg); j++)  {
             cJSON * value_item = cJSON_GetArrayItem(cfg, j);
