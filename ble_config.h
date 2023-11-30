@@ -11,7 +11,7 @@
 #define BLE_CONFIG
 
 
-#include "defs.h"
+#include <cJSON.h>
 
 #define JSON_CFG "json_cfg"
 

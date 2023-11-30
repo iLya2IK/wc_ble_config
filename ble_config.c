@@ -9,6 +9,17 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
+
+#include <stdbool.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+#include "freertos/FreeRTOS.h"
+
+#include "esp_log.h"
+#include "esp_timer.h"
+
 #include "ble_config.h"
 #include "esp_bt.h"
 #include "esp_gap_ble_api.h"
