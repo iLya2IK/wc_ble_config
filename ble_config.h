@@ -42,6 +42,9 @@ enum WC_CFG_ENUM {
 extern cJSON * WC_CFG_VALUES;
 
 void set_ble_config_params(int count, const char ** ids, const uint8_t * idk);
+const char ** get_ble_std_config_idstr();
+const uint8_t * get_ble_std_config_idkey();
+int get_ble_std_config_count();
 
 int initialize_ble(const cJSON * cfg);
 int start_ble_config_round();

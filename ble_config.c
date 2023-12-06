@@ -168,6 +168,18 @@ static const char** cfgIds = standard_cfgIds;
 static const uint8_t * cfgOpts = standard_cfgOpts;
 static int wc_cfg_id_count = CFG_IDS_CNT;
 
+int get_ble_std_config_count() {
+    return CFG_IDS_CNT;
+}
+
+const char ** get_ble_std_config_idstr() {
+    return standard_cfgIds;
+}
+
+const uint8_t * get_ble_std_config_idkey() {
+    return standard_cfgOpts;
+}
+
 void set_ble_config_params(int count, const char ** ids, const uint8_t * idk) {
     wc_cfg_id_count = count;
     cfgIds = ids;
